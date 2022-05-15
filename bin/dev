@@ -1,0 +1,74 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  echo "'bin/dev' must be run with an argument. To see options run 'bin/dev help'";
+  exit
+fi
+
+print_help_menu () {
+  echo  "'bin/dev' can be run with the following arguments:"
+  echo ""
+  echo "help | h"
+  echo "  Display this help menu."
+  echo ""
+  echo "up | u"
+  echo "  Run the setup script to initialize the application. Idempotent so can be run multiple times."
+  echo ""
+  echo "down | d"
+  echo "  Stop the app and all dependent services."
+  echo ""
+  echo "server | serve | s"
+  echo "  Run the application and all dependent services."
+  echo ""
+  echo "reset"
+  echo "  Reset the application - wipe all datastores and re-setup the app."
+  echo ""
+  echo "status"
+  echo "  Show the status of all the app's services."
+}
+
+setup_app () {
+  docker-compose build
+  docker-compose run rails bin/rails db:create db:migrate db:seed
+}
+
+teardown_app () {
+  docker-compose down
+}
+
+serve_app () {
+  docker-compose up -d && docker attach docker-rails_rails_1
+}
+
+reset_app () {
+  docker-compose run rails bin/rails db:drop
+  setup_app
+}
+
+app_status () {
+  docker-compose ps
+}
+
+case $1 in
+  help | h)
+    print_help_menu
+    ;;
+  up | u)
+    setup_app
+    ;;
+  down | d)
+    teardown_app
+    ;;
+  server | serve | s)
+    serve_app
+    ;;
+  reset)
+    reset_app
+    ;;
+  status)
+    app_status
+    ;;
+  *)
+    echo "Unrecognized argument. See 'bin/dev help' for list of valid commands."
+    ;;
+esac
