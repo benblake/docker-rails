@@ -1,24 +1,3 @@
-# README
+# docker-rails
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+This is a basic Rails app setup using Docker compose. Basically a template for a new Rails app with MySQL running with Docker. I may also add new generic services or features from time to time.
